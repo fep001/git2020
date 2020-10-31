@@ -1,0 +1,122 @@
+# git项目管理  
+- 定义:git是一个开源的分布式版本控制系统,用于高效的管理各种大小项目和文件  
+- 用途:  
+    - 防止代码丢失,做备份  
+    - 项目的版本管理和控制,可以通过设置节点进行跳转  
+    - 建立各自的开发环境分支,互不影响,方便合并  
+    - 在多终端开发时,方便代码的相素
+- 安装
+    - linux上安装:sudo apt-get install git 
+    - win上安装:https://git-scm.com/download/win 
+- 设置默认
+    - $ git config --global user.name "Your Name"  
+    - $ git config --global user.email "email@example.com"  
+- 基础:  
+    - 工作区:项目所在操作目录,实际操作项目的区域  
+    - 暂存区:用于记录要作区的工作(修改)内容  
+    - 仓库区:用于备份工作区的内容  
+        - 在本地仓库中,git总是希望工作区的内容与仓库区保持一致,而且只有仓库区的内容才能和其他远程库交互  
+    - 远程库:远程主机上的git仓库  
+- 初始配置 git config  
+    - 配置所有用户,系统级:   
+        - git config --system [选项]  
+        - 配置文件位置:/etc/gitconfig  
+    - 配置当前用户,大多在此设置:  
+        - git config --global [选项]  
+        - 配置文件位置:~/.gitconfig  
+        - 示例设置默认用户名及邮箱  
+            - $ git config --global user.name "Your Name"  
+            - $ git config --global user.email "email@example.com"  
+    - 配置当前项目,在项目目录下执行:  
+        - git config [选项]  
+        - 配置文件位置:project/.git/config  
+- 初始化项目  
+    - 创建目录: mkdir 目录名  
+    - 进入目录: cd 目录名  
+    - 初始化: git init  
+    - 可选配置:
+        - 配置编译器:git config core.editor pycharm  
+- 常用命令  
+    - 查看:
+        - 配置文件:git config --list 
+    - 初始化仓库 git init,将目录变成可以使用git操作管理的目录  
+    - 查看本地仓库状态 git status,初始化仓库后默认工作在master分区  
+    - 工作区提交暂存  
+        - git add [files1 files2 . *] 
+            - 文件要全名以空格分隔,*|.是将除隐文件提交暂存  
+            - 可使用 git rm -- cached <files1> 撤销 
+            - 可设置*gitignore文件忽略  
+                - file1 表示忽略file1文件  
+                - *.a 表示忽略.a结尾的文件  
+                - !lib.a 表示除lib.a外  
+                - build/ 表示目录build下所有文件  
+    - 暂存提交本地仓库  
+        - git commit [file] -m [message] 
+            - message 是后续重要的提示信息,建议简单明了  
+    - 查看commit目录记录  
+        - git log  
+            - 若出现(end)提示后无法操作,可输入q退出
+        - git log --pretty=oneline 
+            - 用一行显示每次信息
+    - 比较工作区文件与仓库文件差异  
+        - git diff [file]  
+    - 将暂存区或某个commit点文件恢复到工作区  
+        - git checkout [commit] --[file]  
+    - 移动复制文件  
+        - git mv <file> 移动 
+        - git rm <file> 删除  
+    - 版本控制  
+        - git reset --hard HEAD^ 
+            - 回退到上n个版本,由^确定n的次数  
+            - 版本回退后,工作区会自动和当前commit版本保持一致  
+        - git reset --hard [commit_id]  
+            - 回退到指定的commit_id节点,前七位即可  
+        - git reflog 
+            - 按最近的操作顺序显示记录,可利用显示的commit_id到任何位置
+        - git tag [tag\_name] [commit_id] -m [message] 
+            - 在重要的id或当前创建快照取别名,可作为里程碑,用于版本迭代  
+            - 可使用git tag看tag\_name信息,用git show tag_name看详细信息  
+            - 使用 git reset --hard tag_name 用于跳转工作状态  
+            - 使用git tag -d tag_name 用于删除版本标记  
+    - 工作区  
+        - git stash save [message]  
+            - 将工作区未提交的修改封存,让工作区回到修改前的状态  
+        - git stash list  
+            - 按最新保存顺序显示已保存的工作区列表  
+        - git stash apply stash@{n}  
+            - 应用n方案,作用在工作区 
+        - git stash drop stash@{n}  
+            - 删除某个工作区 
+        - git stash clear 
+            - 删除所有保存的工作区 
+    - 分支 
+        - 每个人在原有代码(分支)的基础上建立自己的工作环境,单独开发互不干扰,完成工作后再进行分支统一合并,像创建分支进程  
+        - git branch [-a]  
+            - 查看分支,带*为当前工作分支,主分支为master,-a是查看所有分支含远程 
+        - git branch  branch_name 
+            - 在当前创建下级分支,工作分支并不改变
+            - 使用 git checkout branch_name 改变工作分支  
+        - git checkout -b branch_name  
+            - 创建并使用下级分支 
+        - git merge branch_name 
+            - 合并下级分支,需在上级工作环境中 
+            - 第一个分支合并,可使用此直接同步 
+            - 第二个分支由于第一个分支已合并,上级仓库已变化,不能直接使用此命令 
+                - 若只是新增文件,冲突会自动解决,可使用git commit <file> -m [message]
+                - 若多方修改的原库文件,打开冲突文件手动解决后,再git add;git commit  
+                - 减少冲突的方式,是上级模板不修改,下级增加模块,主要难解决是多个
+        - git branch -d <branch_name>  
+            - 删除已合并的分支  
+        - git branch -D <branch_name>  
+            - 删除没有被合并的分支 
+    - GitHub 远程仓库 
+        - linux 获取代码  
+            - git clone https://github.com/XX 
+        - git remote add origin https://github.com/fep001/git2020.git 
+            - 连接远程仓库,地址看自已申请的仓库
+            - 可使用git remote re <origin>,删除远程仓库名  
+        - git branch -m main 
+            - 将主分支名设为main,是避免master麻烦
+        - git push -u origin main
+            - 上传至远程仓库,第一次才加-u origin main,以后就可以用git push 
+            - 出现443错误,设置:git config --global --unset http.proxy
