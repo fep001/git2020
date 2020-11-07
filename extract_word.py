@@ -18,18 +18,9 @@ def find_word(p,s):
     return set(w)
 
 s = """
--$ git status
--On branch master
--Changes not staged for commit:
--  (use "git add <file>..." to update what will be committed)
--  (use "git checkout -- <file>..." to discard changes in working directory)
+warning: LF will be replaced by CRLF in extract_word.py.
+The file will have its original line endings in your working directory
 
--       modified:   readme.txt
--
--Untracked files:
--  (use "git add <file>..." to include in what will be committed)
--
--       LICENSE
 
 """
 
